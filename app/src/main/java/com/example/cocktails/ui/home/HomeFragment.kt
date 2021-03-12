@@ -13,10 +13,12 @@ import com.example.cocktails.R
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.databinding.FragmentHomeBinding
+import com.example.cocktails.getRepository
 import com.google.android.material.transition.MaterialElevationScale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.android.get
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -25,16 +27,14 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
-        val db = DrinksDb.getDatabase(this.requireContext())
-        val repository = Repository(db.drinkDao(), db.ingredientsDao())
         viewModel =
-            ViewModelProvider(this, HomeActivityViewModelFactory(repository, this.requireContext()))
+            ViewModelProvider(this, HomeActivityViewModelFactory(getRepository(requireContext()), requireContext()))
                 .get(HomeActivityViewModel::class.java)
         runBlocking {
-            if (viewModel.homeDrinks == null) viewModel.homeDrinks = viewModel.getHomeDrinks()
-            if (viewModel.cocktails == null) viewModel.cocktails = viewModel.getCocktails()
-            if (viewModel.ordinaryDrinks == null) viewModel.ordinaryDrinks = viewModel.getOrdinaryDrinks()
-            if (viewModel.ingredients == null) viewModel.ingredients = viewModel.getIngredients()
+            if (viewModel.homeDrinks == null) viewModel.homeDrinks = viewModel.getHomeDrinks().shuffled()
+            if (viewModel.cocktails == null) viewModel.cocktails = viewModel.getCocktails().shuffled()
+            if (viewModel.ordinaryDrinks == null) viewModel.ordinaryDrinks = viewModel.getOrdinaryDrinks().shuffled()
+            if (viewModel.ingredients == null) viewModel.ingredients = viewModel.getIngredients().shuffled()
         }
     }
 
@@ -52,12 +52,12 @@ class HomeFragment : Fragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         lifecycleScope.launch {
             binding.apply {
-                drinks.adapter = DrinksAdapter(viewModel.homeDrinks!!.shuffled(), findNavController())
-                cocktails.adapter = DrinksAdapter(viewModel.cocktails!!.shuffled(), findNavController())
+                drinks.adapter = DrinksAdapter(viewModel.homeDrinks!!, findNavController())
+                cocktails.adapter = DrinksAdapter(viewModel.cocktails!!, findNavController())
                 ordinaryDrinks.adapter =
-                    DrinksAdapter(viewModel.ordinaryDrinks!!.shuffled(), findNavController())
+                    DrinksAdapter(viewModel.ordinaryDrinks!!, findNavController())
                 ingredients.adapter =
-                    IngredientAdapter(viewModel.ingredients!!.shuffled(), findNavController())
+                    IngredientAdapter(viewModel.ingredients!!, findNavController())
                 toolBar.setOnMenuItemClickListener { menuItem ->
                     when(menuItem.itemId) {
                         R.id.settings -> {

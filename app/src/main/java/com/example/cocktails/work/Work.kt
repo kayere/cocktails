@@ -1,24 +1,16 @@
 package com.example.cocktails.work
 
 import android.content.Context
-import android.provider.Settings
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.cocktails.data.Repository
-import com.example.cocktails.data.local.DrinksDb
-import com.example.cocktails.data.models.Drinks
-import com.example.cocktails.data.models.Ingredients
+import com.example.cocktails.getRepository
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import java.lang.Exception
 
-class Work(private val context: Context, workerParameters: WorkerParameters) :
+class Work(context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
 
-    private val db = DrinksDb.getDatabase(context)
-    private val repository = Repository(db.drinkDao(), db.ingredientsDao())
-
+    private val repository = getRepository(context)
     override suspend fun doWork(): Result {
         val drinksResult = GlobalScope.async { fetchDrinks() }
         val ingredientResult = GlobalScope.async { fetchIngredients() }

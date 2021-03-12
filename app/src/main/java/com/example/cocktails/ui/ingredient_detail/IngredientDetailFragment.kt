@@ -12,6 +12,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.cocktails.R
@@ -19,12 +20,14 @@ import com.example.cocktails.animatePropertyValuesHolder
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.databinding.FragmentIngredientDetailBinding
+import com.example.cocktails.getRepository
 import com.example.cocktails.loadUrl
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 
 class IngredientDetailFragment : Fragment() {
     private lateinit var binding: FragmentIngredientDetailBinding
@@ -40,11 +43,9 @@ class IngredientDetailFragment : Fragment() {
         sharedElementReturnTransition = MaterialContainerTransform().apply {
             scrimColor = Color.TRANSPARENT
         }
-        val db = DrinksDb.getDatabase(requireContext())
-        val repository = Repository(db.drinkDao(), db.ingredientsDao())
         viewModel = ViewModelProvider(
             requireActivity(),
-            IngredientDetailFragmentViewModelFactory(repository)
+            IngredientDetailFragmentViewModelFactory(getRepository(requireContext()))
         )
             .get(IngredientDetailFragmentViewModel::class.java)
         viewModel.ingredient = args.ingredeint
@@ -75,9 +76,9 @@ class IngredientDetailFragment : Fragment() {
             drinks.layoutManager = GridLayoutManager(requireContext(), 2)
         }
 
-        viewModel.drinksWithIngredient().observe(requireActivity(), { drinkList ->
+        viewModel.drinksWithIngredient().observe(requireActivity()) { drinkList ->
             binding.drinks.adapter = SmallDrinkAdapter(drinkList)
-        })
+        }
 
         lifecycleScope.launch(Dispatchers.Main) {
             delay(350)

@@ -9,10 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.databinding.ActivitySplashBinding
+import com.example.cocktails.getRepository
 import com.example.cocktails.ui.home.HomeActivity
 import com.google.android.material.transition.platform.MaterialSharedAxis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,10 +25,7 @@ class SplashActivity : AppCompatActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        val db = DrinksDb.getDatabase(this)
-        val repository = Repository(db.drinkDao(), db.ingredientsDao())
-        val viewModel = ViewModelProvider(this, SplashActivityViewModelFactory(repository, this))
+        val viewModel = ViewModelProvider(this, SplashActivityViewModelFactory(getRepository(this), this))
             .get(SplashActivityViewModel::class.java)
 
         lifecycleScope.launch {

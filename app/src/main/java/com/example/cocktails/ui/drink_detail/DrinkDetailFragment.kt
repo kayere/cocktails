@@ -1,7 +1,6 @@
 package com.example.cocktails.ui.drink_detail
 
 import android.animation.PropertyValuesHolder
-import android.graphics.Color
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
 import android.util.Log
@@ -17,14 +16,14 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.cocktails.R
 import com.example.cocktails.animatePropertyValuesHolder
-import com.example.cocktails.data.Repository
-import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.databinding.FragmentDrinkDetailBinding
+import com.example.cocktails.getRepository
 import com.example.cocktails.loadUrl
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 
 class DrinkDetailFragment : Fragment() {
     private lateinit var binding: FragmentDrinkDetailBinding
@@ -44,12 +43,9 @@ class DrinkDetailFragment : Fragment() {
         sharedElementReturnTransition = MaterialContainerTransform().apply {
             scrimColor = TRANSPARENT
         }
-        val db = DrinksDb.getDatabase(requireContext())
-        val repository = Repository(db.drinkDao(), db.ingredientsDao())
-
         viewModel = ViewModelProvider(
             this, DrinkDetailFragmentViewModelFactory(
-                repository,
+                getRepository(requireContext()),
                 requireContext()
             )
         ).get(DrinkDetailFragmentViewModel::class.java)

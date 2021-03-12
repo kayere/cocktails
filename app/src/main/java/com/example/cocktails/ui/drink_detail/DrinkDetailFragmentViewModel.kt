@@ -6,11 +6,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.models.Drink
 import com.example.cocktails.data.models.Ingredient
 import com.example.cocktails.getIngredientNames
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
 
 class DrinkDetailFragmentViewModel(
@@ -20,7 +21,7 @@ class DrinkDetailFragmentViewModel(
 
     var drink: Drink? = null
 
-    val fetchIngredients = flow<List<Ingredient>> {
+    val fetchIngredients = flow {
         val ingredients = mutableSetOf<Ingredient>()
         val unAvailableIngredients = mutableListOf<String>()
         Log.d("TAG", ": ${drink?.getIngredientNames()} \n $drink")
@@ -31,24 +32,29 @@ class DrinkDetailFragmentViewModel(
             else unAvailableIngredients.add(name)
         }
         emit(ingredients.toList())
-        for (unAvailableIngredient in unAvailableIngredients) {
-            var ingredient: Ingredient? = null
-            try {
-                ingredient = repository.searchIngredient(unAvailableIngredient).ingredients?.get(0)
-            } catch (e: Exception) {
-                Toast.makeText(context, "Could not load all ingredients", Toast.LENGTH_SHORT).show()
-            }
-            ingredient?.let {
-                it.thumb = "https://www.thecocktaildb.com/images/ingredients/${it.name}-medium.png"
-                ingredients.add(it)
+
+        unAvailableIngredients.map { unAvailableIngredient ->
+            val ingredient: Ingredient? = viewModelScope.async(Dispatchers.IO) {
+                var ingredient: Ingredient? = null
+                try {
+                    ingredient =
+                        repository.searchIngredient(unAvailableIngredient).ingredients?.get(0)
+                } catch (e: Exception) {
+                    return@async ingredient
+                }
+                ingredient?.let {
+                    ingredient.thumb =
+                        "https://www.thecocktaildb.com/images/ingredients/${ingredient.name}-medium.png"
+                    repository.addIngredient(ingredient)
+                }
+                return@async ingredient
+            }.await()
+            if (ingredient != null) {
+                ingredients.add(ingredient)
                 emit(ingredients.toList())
-                Log.d("TAG", "$unAvailableIngredient: $it")
-                repository.addIngredient(it)
-                delay(1000)
-                Log.d(
-                    "TAG",
-                    "$unAvailableIngredient: ${repository.getIngredientByName(unAvailableIngredient)}"
-                )
+            } else {
+                Toast.makeText(context, "Could not load all ingredients", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }.asLiveData()

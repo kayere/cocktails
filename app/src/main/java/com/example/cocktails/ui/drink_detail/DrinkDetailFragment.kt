@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.cocktails.R
@@ -24,7 +25,6 @@ import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 class DrinkDetailFragment : Fragment() {
     private lateinit var binding: FragmentDrinkDetailBinding

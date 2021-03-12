@@ -14,6 +14,7 @@ import com.example.cocktails.data.Repository
 import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.databinding.FragmentHomeBinding
 import com.google.android.material.transition.MaterialElevationScale
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -30,10 +31,10 @@ class HomeFragment : Fragment() {
             ViewModelProvider(this, HomeActivityViewModelFactory(repository, this.requireContext()))
                 .get(HomeActivityViewModel::class.java)
         runBlocking {
-            if (viewModel.homeDrinks == null) viewModel.homeDrinks = viewModel.getHomeDrinks().shuffled()
-            if (viewModel.cocktails == null) viewModel.cocktails = viewModel.getCocktails().shuffled()
-            if (viewModel.ordinaryDrinks == null) viewModel.ordinaryDrinks = viewModel.getOrdinaryDrinks().shuffled()
-            if (viewModel.ingredients == null) viewModel.ingredients = viewModel.getIngredients().shuffled()
+            if (viewModel.homeDrinks == null) viewModel.homeDrinks = viewModel.getHomeDrinks()
+            if (viewModel.cocktails == null) viewModel.cocktails = viewModel.getCocktails()
+            if (viewModel.ordinaryDrinks == null) viewModel.ordinaryDrinks = viewModel.getOrdinaryDrinks()
+            if (viewModel.ingredients == null) viewModel.ingredients = viewModel.getIngredients()
         }
     }
 
@@ -51,12 +52,12 @@ class HomeFragment : Fragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         lifecycleScope.launch {
             binding.apply {
-                drinks.adapter = DrinksAdapter(viewModel.homeDrinks!!, findNavController())
-                cocktails.adapter = DrinksAdapter(viewModel.cocktails!!, findNavController())
+                drinks.adapter = DrinksAdapter(viewModel.homeDrinks!!.shuffled(), findNavController())
+                cocktails.adapter = DrinksAdapter(viewModel.cocktails!!.shuffled(), findNavController())
                 ordinaryDrinks.adapter =
-                    DrinksAdapter(viewModel.ordinaryDrinks!!, findNavController())
+                    DrinksAdapter(viewModel.ordinaryDrinks!!.shuffled(), findNavController())
                 ingredients.adapter =
-                    IngredientAdapter(viewModel.ingredients!!, findNavController())
+                    IngredientAdapter(viewModel.ingredients!!.shuffled(), findNavController())
                 toolBar.setOnMenuItemClickListener { menuItem ->
                     when(menuItem.itemId) {
                         R.id.settings -> {

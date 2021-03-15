@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.cocktails.ui.home.HomeFragment"
@@ -25,7 +25,7 @@
         android:label="fragment_drink_detail"
         tools:layout="@layout/fragment_drink_detail" >
         <argument
-            android:name="Drink"
+            android:name="drink"
             app:argType="com.example.cocktails.data.models.Drink" />
     </fragment>
     <fragment
@@ -34,11 +34,22 @@
         android:label="fragment_ingredient_detail"
         tools:layout="@layout/fragment_ingredient_detail" >
         <argument
-            android:name="ingredeint"
+            android:name="ingredient"
             app:argType="com.example.cocktails.data.models.Ingredient" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.cocktails.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.cocktails.ui.splash_screen.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

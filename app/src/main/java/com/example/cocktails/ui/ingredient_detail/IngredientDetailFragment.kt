@@ -48,7 +48,7 @@ class IngredientDetailFragment : Fragment() {
             IngredientDetailFragmentViewModelFactory(getRepository(requireContext()))
         )
             .get(IngredientDetailFragmentViewModel::class.java)
-        viewModel.ingredient = args.ingredeint
+        viewModel.ingredient = args.ingredient
     }
 
     override fun onCreateView(

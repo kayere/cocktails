@@ -11,15 +11,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Cocktails"
         tools:ignore="AllowBackup">
         <activity
             android:name=".ui.drink_detail.DrinkImageActivity"
             android:theme="@style/Theme.cocktails.drinkImage" />
-        <activity android:name=".ui.home.HomeActivity" />
         <activity
-            android:name=".ui.splash_screen.SplashActivity"
-            android:theme="@style/Theme.CocktailSplashScreen">
+            android:name=".ui.HomeActivity"
+            android:theme="@style/Theme.Cocktails">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

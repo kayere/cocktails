@@ -15,6 +15,7 @@ import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.databinding.FragmentHomeBinding
 import com.example.cocktails.getRepository
 import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -25,6 +26,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
         viewModel =

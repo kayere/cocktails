@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Cocktails" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Background color -->
+        <item name="android:colorBackground">@color/primaryNightColor</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primaryNightColor</item>
         <item name="colorPrimaryVariant">@color/primaryNightColor</item>
@@ -19,34 +21,6 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.CocktailsTranslucentStatusBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primaryNightColor</item>
-        <item name="colorPrimaryVariant">@color/primaryNightColor</item>
-        <item name="colorOnPrimary">@color/secondaryTextColor</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/primaryColor</item>
-        <item name="colorSecondaryVariant">@color/primaryLightColor</item>
-        <item name="colorOnSecondary">@color/primaryTextColor</item>
-        <!-- Status bar color. -->
-        <item name="android:windowTranslucentStatus">true</item>
-
-        <item name="colorSurface">@color/PrimaryNightLightColor</item>
-
-        <item name="android:windowActivityTransitions">true</item>
-        <!-- Customize your theme here. -->
-    </style>
-
-    <style name="Theme.CocktailSplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:background">@color/primaryNightColor</item>
-        <item name="android:windowActivityTransitions">true</item>
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primaryNightColor</item>
-        <item name="colorOnPrimary">@color/secondaryTextColor</item>
-        <item name="android:statusBarColor">@color/primaryNightColor</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:navigationBarColor">@color/primaryNightColor</item>
-    </style>
     <!-- Drink image theme-->
     <style name="Theme.cocktails.drinkImage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/black</item>

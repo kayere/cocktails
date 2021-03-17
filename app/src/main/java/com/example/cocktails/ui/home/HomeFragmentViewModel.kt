@@ -9,7 +9,7 @@ import com.example.cocktails.data.models.Ingredient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class HomeActivityViewModel(private val repository: Repository, private val context: Context) :
+class HomeFragmentViewModel(private val repository: Repository, private val context: Context) :
     ViewModel() {
 
     suspend fun getHomeDrinks(): List<Drink> = withContext(Dispatchers.IO) { repository.drinks() }
@@ -36,16 +36,16 @@ class HomeActivityViewModel(private val repository: Repository, private val cont
     var ingredients: List<Ingredient>? = null
 }
 
-class HomeActivityViewModelFactory(
+class HomeFragmentViewModelFactory(
     private val repository: Repository,
     private val context: Context
 ) :
     ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HomeActivityViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(HomeFragmentViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HomeActivityViewModel(repository, context) as T
+            return HomeFragmentViewModel(repository, context) as T
         }
         throw IllegalArgumentException("Unknown view model class")
     }

@@ -12,14 +12,22 @@
     <ImageView
         android:id="@+id/drink_thumb"
         android:layout_width="0dp"
-        android:layout_height="380dp"
+        android:layout_height="0dp"
         android:contentDescription="@string/drink_thumb"
         android:scaleType="centerCrop"
         android:transitionName="@string/drink_thumb"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/space"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/nestedScrollView"
+        android:layout_marginTop="30dp"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -107,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="30dp"
                 android:fontFamily="@font/gotham_book"
                 android:lineSpacingExtra="2sp"
                 android:textColor="?attr/colorOnPrimary"

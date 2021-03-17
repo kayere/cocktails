@@ -16,7 +16,7 @@
             android:name=".ui.drink_detail.DrinkImageActivity"
             android:theme="@style/Theme.cocktails.drinkImage" />
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".ui.CocktailsActivity"
             android:theme="@style/Theme.Cocktails">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

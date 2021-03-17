@@ -17,15 +17,15 @@ import kotlinx.coroutines.launch
 class SplashFragment : Fragment() {
 
     private lateinit var binding: FragmentSplashBinding
-    private lateinit var viewModel: SplashActivityViewModel
+    private lateinit var viewModel: SplashFragmentViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
-            requireActivity(), SplashActivityViewModelFactory(
+            requireActivity(), SplashFragmentViewModelFactory(
                 getRepository(requireContext()), requireContext()
             )
-        ).get(SplashActivityViewModel::class.java)
+        ).get(SplashFragmentViewModel::class.java)
     }
 
     override fun onCreateView(

@@ -10,33 +10,36 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.cocktails.R
-import com.example.cocktails.data.Repository
-import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.databinding.FragmentHomeBinding
 import com.example.cocktails.getRepository
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.koin.android.ext.android.get
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var viewModel: HomeActivityViewModel
+    private lateinit var viewModel: HomeFragmentViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
         viewModel =
-            ViewModelProvider(this, HomeActivityViewModelFactory(getRepository(requireContext()), requireContext()))
-                .get(HomeActivityViewModel::class.java)
+            ViewModelProvider(
+                this,
+                HomeFragmentViewModelFactory(getRepository(requireContext()), requireContext())
+            )
+                .get(HomeFragmentViewModel::class.java)
         runBlocking {
-            if (viewModel.homeDrinks == null) viewModel.homeDrinks = viewModel.getHomeDrinks().shuffled()
-            if (viewModel.cocktails == null) viewModel.cocktails = viewModel.getCocktails().shuffled()
-            if (viewModel.ordinaryDrinks == null) viewModel.ordinaryDrinks = viewModel.getOrdinaryDrinks().shuffled()
-            if (viewModel.ingredients == null) viewModel.ingredients = viewModel.getIngredients().shuffled()
+            if (viewModel.homeDrinks == null) viewModel.homeDrinks =
+                viewModel.getHomeDrinks().shuffled()
+            if (viewModel.cocktails == null) viewModel.cocktails =
+                viewModel.getCocktails().shuffled()
+            if (viewModel.ordinaryDrinks == null) viewModel.ordinaryDrinks =
+                viewModel.getOrdinaryDrinks().shuffled()
+            if (viewModel.ingredients == null) viewModel.ingredients =
+                viewModel.getIngredients().shuffled()
         }
     }
 
@@ -61,9 +64,10 @@ class HomeFragment : Fragment() {
                 ingredients.adapter =
                     IngredientAdapter(viewModel.ingredients!!, findNavController())
                 toolBar.setOnMenuItemClickListener { menuItem ->
-                    when(menuItem.itemId) {
+                    when (menuItem.itemId) {
                         R.id.settings -> {
-                            val options = HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
+                            val options =
+                                HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
                             findNavController().navigate(options)
                             true
                         }

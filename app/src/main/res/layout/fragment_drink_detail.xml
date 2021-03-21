@@ -16,9 +16,9 @@
         android:contentDescription="@string/drink_thumb"
         android:scaleType="centerCrop"
         android:transitionName="@string/drink_thumb"
+        app:layout_constraintBottom_toTopOf="@id/space"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/space"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
@@ -26,8 +26,8 @@
         android:id="@+id/space"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/nestedScrollView"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toTopOf="@id/nestedScrollView" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"

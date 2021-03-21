@@ -15,10 +15,7 @@ interface DrinksDao {
     suspend fun addDrink(drink: Drink)
 
     @Query("SELECT * FROM drinks_table")
-    fun getDrinks(): Flow<List<Drink>>
-
-    @Query("SELECT * FROM drinks_table")
-    suspend fun getHomeDrinks(): List<Drink>
+    suspend fun getDrinks(): List<Drink>
 
     @Query("SELECT * FROM drinks_table WHERE drinkId LIKE :id")
     suspend fun getDrink(id: String): Drink

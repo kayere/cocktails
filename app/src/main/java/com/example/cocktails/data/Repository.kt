@@ -19,7 +19,11 @@ class Repository(private val drinksDao: DrinksDao, private val ingredientsDao: I
 
     suspend fun addDrink(drink: Drink) = drinksDao.addDrink(drink)
 
-    suspend fun drinks(): List<Drink> = drinksDao.getHomeDrinks()
+    private lateinit var drinks: List<Drink>
+    suspend fun drinks(): List<Drink> {
+        if (drinks.isEmpty()) drinks = drinksDao.getDrinks()
+        return drinks
+    }
 
     suspend fun searchDrink(key: String): Drinks = api.searchDrink(key)
 

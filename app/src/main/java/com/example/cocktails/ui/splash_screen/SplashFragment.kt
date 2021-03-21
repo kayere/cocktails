@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.cocktails.data.Repository
 import com.example.cocktails.databinding.FragmentSplashBinding
-import com.example.cocktails.getRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 
 class SplashFragment : Fragment() {
 
@@ -23,7 +24,7 @@ class SplashFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
             requireActivity(), SplashFragmentViewModelFactory(
-                getRepository(requireContext()), requireContext()
+                get(), requireContext()
             )
         ).get(SplashFragmentViewModel::class.java)
     }

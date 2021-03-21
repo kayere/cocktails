@@ -3,7 +3,6 @@ package com.example.cocktails.work
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.cocktails.data.Repository
 import com.example.cocktails.getRepository
 import kotlinx.coroutines.*
 

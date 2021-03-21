@@ -19,7 +19,7 @@ class Repository(private val drinksDao: DrinksDao, private val ingredientsDao: I
 
     suspend fun addDrink(drink: Drink) = drinksDao.addDrink(drink)
 
-    private lateinit var drinks: List<Drink>
+    private var drinks: List<Drink> = emptyList()
     suspend fun drinks(): List<Drink> {
         if (drinks.isEmpty()) drinks = drinksDao.getDrinks()
         return drinks

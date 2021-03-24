@@ -1,6 +1,7 @@
 package com.example.cocktails.ui.drink_detail
 
 import android.animation.PropertyValuesHolder
+import android.content.res.Configuration
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
 import android.util.Log
@@ -64,7 +65,7 @@ class DrinkDetailFragment : Fragment() {
             instructions.alpha = 0F
             ingredientsLabel.alpha = 0F
             drinkThumb.apply {
-                loadUrl(viewModel.drink?.drinkThumb)
+                loadUrl(viewModel.drink?.drinkThumb, requireContext())
                 setOnClickListener {
 
                 }
@@ -87,6 +88,7 @@ class DrinkDetailFragment : Fragment() {
             animSet.start()
 
             var firstFetch = true
+            val adapter = SmallIngredientAdapter(emptyList(), requireContext())
             viewModel.fetchIngredients.observe(requireActivity()) {
                 if (firstFetch) {
                     firstFetch = false
@@ -102,8 +104,8 @@ class DrinkDetailFragment : Fragment() {
                         1 -> {
                             binding.apply {
                                 ingredientsLabel.text = getString(R.string.ingredient)
-                                ingredients.adapter =
-                                    SmallIngredientAdapter(it)
+                                adapter.ingredients = it
+                                ingredients.adapter = adapter
                                 instructionsLabel.text = getString(R.string.instructions)
                                 instructions.text = viewModel.drink?.instructions
                             }
@@ -112,8 +114,8 @@ class DrinkDetailFragment : Fragment() {
                         else -> {
                             binding.apply {
                                 ingredientsLabel.text = getString(R.string.ingredients)
-                                ingredients.adapter =
-                                    SmallIngredientAdapter(it)
+                                adapter.ingredients = it
+                                ingredients.adapter = adapter
                                 instructionsLabel.text = getString(R.string.instructions)
                                 instructions.text = viewModel.drink?.instructions
                             }
@@ -123,8 +125,8 @@ class DrinkDetailFragment : Fragment() {
                 } else {
                     if (it.size > 1) {
                         binding.ingredientsLabel.text = getString(R.string.ingredients)
-                        binding.ingredients.adapter =
-                            SmallIngredientAdapter(it)
+                        adapter.ingredients = it
+                        binding.ingredients.adapter?.notifyDataSetChanged()
                     }
                 }
             }
@@ -133,7 +135,13 @@ class DrinkDetailFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        requireActivity().window.decorView.systemUiVisibility = View.VISIBLE
+        when (requireContext().resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> requireActivity().window.decorView.systemUiVisibility =
+                View.STATUS_BAR_VISIBLE
+            Configuration.UI_MODE_NIGHT_NO -> requireActivity().window.decorView.systemUiVisibility =
+                View.STATUS_BAR_VISIBLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        }
     }
 
 }

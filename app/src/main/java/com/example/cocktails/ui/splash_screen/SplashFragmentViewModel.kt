@@ -16,7 +16,7 @@ class SplashFragmentViewModel(private val repository: Repository, private val co
     ViewModel() {
 
     suspend fun checkDb() {
-        if (repository.getCount() < 400) {
+        if (repository.drinks().size < 400) {
             val wm = WorkManager.getInstance(context)
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -26,6 +26,7 @@ class SplashFragmentViewModel(private val repository: Repository, private val co
                 .build()
             wm.enqueue(work)
         }
+        else repository.getHomeIngredients()
     }
 }
 

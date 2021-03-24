@@ -33,9 +33,12 @@ class Repository(private val drinksDao: DrinksDao, private val ingredientsDao: I
 
     fun getIngredients(): Flow<List<Ingredient>> = ingredientsDao.getIngredients()
 
-    suspend fun getHomeIngredients(): List<Ingredient> = ingredientsDao.getHomeIngredients()
+    var ingredients = emptyList<Ingredient>()
+    suspend fun getHomeIngredients(): List<Ingredient> {
+        if (ingredients.isEmpty()) ingredients = ingredientsDao.getHomeIngredients()
+        return ingredients
+    }
 
-    suspend fun getCount(): Int = drinksDao.getCount()
 
     fun filterDrinkByCategory(category: String): Flow<List<Drink>> =
         drinksDao.filterDrinkByCategory(category)

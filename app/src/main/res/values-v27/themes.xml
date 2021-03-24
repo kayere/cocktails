@@ -3,7 +3,7 @@
 
     <style name="Theme.Cocktails" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Background color -->
-        <item name="android:colorBackground">@color/primaryLightColor</item>
+        <item name="android:colorBackground">@color/primaryColor</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/primaryColor</item>
@@ -13,13 +13,12 @@
         <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primaryColor</item>
         <item name="android:windowLightStatusBar">true</item>
         <!-- Navigation bar-->
         <item name="android:navigationBarColor">@color/primaryColor</item>
         <item name="android:windowLightNavigationBar">true</item>
 
-        <item name="android:windowActivityTransitions">true</item>
         <!-- Customize your theme here. -->
     </style>
 

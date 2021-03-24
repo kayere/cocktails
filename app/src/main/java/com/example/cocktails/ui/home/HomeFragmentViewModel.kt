@@ -12,8 +12,33 @@ import kotlinx.coroutines.withContext
 class HomeFragmentViewModel(private val repository: Repository, private val context: Context) :
     ViewModel() {
 
-    suspend fun getHomeDrinks(): List<Drink> = withContext(Dispatchers.IO) { repository.drinks() }
-    var homeDrinks: List<Drink>? = null
+    private var homeDrinks: List<Drink>? = null
+    suspend fun getHomeDrinks(): List<Drink> {
+        if (homeDrinks == null)
+            homeDrinks = repository.drinks().shuffled()
+        return homeDrinks!!
+    }
+
+    private var cocktails: List<Drink>? = null
+    suspend fun getCocktails(): List<Drink> {
+        if (cocktails == null)
+            cocktails = repository.filterHomeDrinkByCategory("Cocktail").shuffled()
+        return cocktails!!
+    }
+
+    private var ordinaryDrinks: List<Drink>? = null
+    suspend fun getOrdinaryDrinks(): List<Drink> {
+        if (ordinaryDrinks == null)
+            ordinaryDrinks = repository.filterHomeDrinkByCategory("Ordinary Drink").shuffled()
+        return ordinaryDrinks!!
+    }
+
+    private var ingredients: List<Ingredient>? = null
+    suspend fun getIngredients(): List<Ingredient> {
+        if (ingredients == null)
+            ingredients = repository.getHomeIngredients().shuffled()
+        return ingredients!!
+    }
 
     suspend fun alcoholDrinks(): List<Drink> =
         withContext(Dispatchers.IO) { repository.getAlcoholicDrinks("Non Alcoholic") }
@@ -21,19 +46,6 @@ class HomeFragmentViewModel(private val repository: Repository, private val cont
     suspend fun nonAlcoholDrinks(): List<Drink> =
         withContext(Dispatchers.IO) { repository.getAlcoholicDrinks("Non Alcoholic") }
 
-    suspend fun getCocktails(): List<Drink> =
-        withContext(Dispatchers.IO) { repository.filterHomeDrinkByCategory("Cocktail") }
-
-    var cocktails: List<Drink>? = null
-
-    suspend fun getOrdinaryDrinks(): List<Drink> =
-        withContext(Dispatchers.IO) { repository.filterHomeDrinkByCategory("Ordinary Drink") }
-
-    var ordinaryDrinks: List<Drink>? = null
-
-    suspend fun getIngredients(): List<Ingredient> =
-        withContext(Dispatchers.IO) { repository.getHomeIngredients() }
-    var ingredients: List<Ingredient>? = null
 }
 
 class HomeFragmentViewModelFactory(

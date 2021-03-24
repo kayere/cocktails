@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.cocktails.R
@@ -57,7 +56,7 @@ class IngredientDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             ingredientName.text = viewModel.ingredient.name
-            ingredientThumb.loadUrl(viewModel.ingredient.thumb)
+            ingredientThumb.loadUrl(viewModel.ingredient.thumb, requireContext())
             description.text = viewModel.ingredient.description
             drinks.alpha = 0F
             drinksLabel.alpha = 0F
@@ -71,7 +70,7 @@ class IngredientDetailFragment : Fragment() {
         }
 
         viewModel.drinksWithIngredient().observe(requireActivity()) { drinkList ->
-            binding.drinks.adapter = SmallDrinkAdapter(drinkList)
+            binding.drinks.adapter = SmallDrinkAdapter(drinkList, requireContext())
         }
 
         lifecycleScope.launch(Dispatchers.Main) {

@@ -1,7 +1,6 @@
 package com.example.cocktails.ui.drink_detail
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -24,9 +23,9 @@ class DrinkDetailFragmentViewModel(
     val fetchIngredients = flow {
         val ingredients = mutableSetOf<Ingredient>()
         val unAvailableIngredients = mutableListOf<String>()
-        Log.d("TAG", ": ${drink?.getIngredientNames()} \n $drink")
         // fetching ingredients from the database using their names
-        for (name in drink?.getIngredientNames()!!) {
+        val ingredientNames = drink?.getIngredientNames()!!
+        for (name in ingredientNames) {
             val ingredient = repository.getIngredientByName(name)
             if (ingredient != null) ingredients.add(ingredient)
             else unAvailableIngredients.add(name)

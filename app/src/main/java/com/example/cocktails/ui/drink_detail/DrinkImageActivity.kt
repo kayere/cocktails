@@ -10,6 +10,6 @@ class DrinkImageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityDrinkImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.drinkThumb.loadUrl(intent.getStringExtra("imageUrl"))
+        binding.drinkThumb.loadUrl(intent.getStringExtra("imageUrl"), this)
     }
 }

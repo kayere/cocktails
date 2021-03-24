@@ -14,12 +14,18 @@ import com.example.cocktails.databinding.FragmentHomeBinding
 import com.example.cocktails.getRepository
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var viewModel: HomeFragmentViewModel
+    private lateinit var drinksAdapter: DrinksAdapter
+    private lateinit var cocktailAdapter: DrinksAdapter
+    private lateinit var ordinaryDrinkAdapter: DrinksAdapter
+    private lateinit var ingredientAdapter: IngredientAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
@@ -32,14 +38,13 @@ class HomeFragment : Fragment() {
             )
                 .get(HomeFragmentViewModel::class.java)
         runBlocking {
-            if (viewModel.homeDrinks == null) viewModel.homeDrinks =
-                viewModel.getHomeDrinks().shuffled()
-            if (viewModel.cocktails == null) viewModel.cocktails =
-                viewModel.getCocktails().shuffled()
-            if (viewModel.ordinaryDrinks == null) viewModel.ordinaryDrinks =
-                viewModel.getOrdinaryDrinks().shuffled()
-            if (viewModel.ingredients == null) viewModel.ingredients =
-                viewModel.getIngredients().shuffled()
+            drinksAdapter =
+                DrinksAdapter(viewModel.getHomeDrinks(), findNavController(), requireContext())
+            cocktailAdapter =
+                DrinksAdapter(viewModel.getCocktails(), findNavController(), requireContext())
+            ordinaryDrinkAdapter =
+                DrinksAdapter(viewModel.getOrdinaryDrinks(), findNavController(), requireContext())
+            ingredientAdapter = IngredientAdapter(viewModel.getIngredients(), findNavController())
         }
     }
 
@@ -54,15 +59,12 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.Main) {
             binding.apply {
-                drinks.adapter = DrinksAdapter(viewModel.homeDrinks!!, findNavController())
-                cocktails.adapter = DrinksAdapter(viewModel.cocktails!!, findNavController())
-                ordinaryDrinks.adapter =
-                    DrinksAdapter(viewModel.ordinaryDrinks!!, findNavController())
-                ingredients.adapter =
-                    IngredientAdapter(viewModel.ingredients!!, findNavController())
+                drinks.adapter = drinksAdapter
+                cocktails.adapter = cocktailAdapter
+                ordinaryDrinks.adapter = ordinaryDrinkAdapter
+                ingredients.adapter = ingredientAdapter
                 toolBar.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.settings -> {
@@ -75,7 +77,19 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
+            view.doOnPreDraw { startPostponedEnterTransition() }
         }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
 }

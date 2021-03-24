@@ -25,7 +25,7 @@ class IngredientAdapter(
                 transitionName = "Ingredient${ingredients[position].ingredientId} name"
             }
             ingredientThumb.apply {
-                loadUrl(ingredients[position].thumb)
+                loadUrl(ingredients[position].thumb, context)
                 transitionName = "Ingredient${ingredients[position].ingredientId} image"
             }
             ingredientCard.setOnClickListener {

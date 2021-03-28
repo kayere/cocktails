@@ -45,4 +45,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="general">General</string>
     <string name="favorites">favorites</string>
+    <string name="network_alert_message">Not connected to any network. Please connect to load drinks</string>
+    <string name="ok">OK</string>
 </resources>

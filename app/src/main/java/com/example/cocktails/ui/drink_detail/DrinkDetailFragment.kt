@@ -126,7 +126,7 @@ class DrinkDetailFragment : Fragment() {
                     if (it.size > 1) {
                         binding.ingredientsLabel.text = getString(R.string.ingredients)
                         adapter.ingredients = it
-                        binding.ingredients.adapter?.notifyDataSetChanged()
+                        binding.ingredients.adapter!!.notifyDataSetChanged()
                     }
                 }
             }

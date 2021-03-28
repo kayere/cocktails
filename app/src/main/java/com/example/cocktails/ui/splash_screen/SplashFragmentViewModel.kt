@@ -7,9 +7,8 @@ import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.example.cocktails.Result
 import com.example.cocktails.data.Repository
-import com.example.cocktails.data.models.Drink
-import com.example.cocktails.data.models.Ingredient
 import com.example.cocktails.work.Work
 
 class SplashFragmentViewModel(private val repository: Repository, private val context: Context) :
@@ -25,9 +24,22 @@ class SplashFragmentViewModel(private val repository: Repository, private val co
                 .setConstraints(constraints)
                 .build()
             wm.enqueue(work)
-        }
-        else repository.getHomeIngredients()
+        } else repository.getHomeIngredients()
     }
+
+    suspend fun fetchFirstDrinks(): Result {
+        return try {
+            val drinks = repository.getDrinks("a").drinks!!
+            drinks.forEach { drink ->
+                repository.addDrink(drink)
+            }
+            Result.PASS
+        } catch (e: Exception) {
+            Result.FAIL
+        }
+    }
+
+    suspend fun checkFirstLaunch(): Boolean = repository.drinks().size < 100
 }
 
 class SplashFragmentViewModelFactory(

@@ -116,4 +116,14 @@ fun checkConnection(context: Context): Boolean {
     return false
 }
 
+enum class DrinkTypes {
+    ALL,
+    HOME,
+    COCKTAILS,
+    ORDINARY
+}
 
+enum class Result {
+    PASS,
+    FAIL
+}

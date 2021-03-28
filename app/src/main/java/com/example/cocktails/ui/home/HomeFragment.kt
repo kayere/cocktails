@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.cocktails.R
 import com.example.cocktails.databinding.FragmentHomeBinding
 import com.example.cocktails.getRepository
+import com.example.cocktails.ui.drink_detail.DrinkDetailFragmentViewModel
+import com.example.cocktails.ui.drink_detail.DrinkDetailFragmentViewModelFactory
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class HomeFragment : Fragment() {
@@ -37,6 +36,11 @@ class HomeFragment : Fragment() {
                 HomeFragmentViewModelFactory(getRepository(requireContext()), requireContext())
             )
                 .get(HomeFragmentViewModel::class.java)
+        val drinkDetailViewModel = ViewModelProvider(
+            this, DrinkDetailFragmentViewModelFactory(
+                getRepository(requireContext()), requireContext()
+            )
+        ).get(DrinkDetailFragmentViewModel::class.java)
         runBlocking {
             drinksAdapter =
                 DrinksAdapter(viewModel.getHomeDrinks(), findNavController(), requireContext())
@@ -59,27 +63,24 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-        lifecycleScope.launch(Dispatchers.Main) {
-            binding.apply {
-                drinks.adapter = drinksAdapter
-                cocktails.adapter = cocktailAdapter
-                ordinaryDrinks.adapter = ordinaryDrinkAdapter
-                ingredients.adapter = ingredientAdapter
-                toolBar.setOnMenuItemClickListener { menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.settings -> {
-                            val options =
-                                HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
-                            findNavController().navigate(options)
-                            true
-                        }
-                        else -> false
+        view.doOnPreDraw { startPostponedEnterTransition() }
+        binding.apply {
+            drinks.adapter = drinksAdapter
+            cocktails.adapter = cocktailAdapter
+            ordinaryDrinks.adapter = ordinaryDrinkAdapter
+            ingredients.adapter = ingredientAdapter
+            toolBar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.settings -> {
+                        val options =
+                            HomeFragmentDirections.actionHomeFragmentToSettingsFragment()
+                        findNavController().navigate(options)
+                        true
                     }
+                    else -> false
                 }
             }
-            view.doOnPreDraw { startPostponedEnterTransition() }
         }
-
     }
 
     override fun onPause() {

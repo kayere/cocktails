@@ -20,7 +20,7 @@ class Work(context: Context, workerParameters: WorkerParameters) :
     }
 
     private suspend fun fetchDrinks(): Result {
-        ('a'..'z').map {
+        ('b'..'z').map {
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     val drinks = repository.getDrinks(it.toString()).drinks

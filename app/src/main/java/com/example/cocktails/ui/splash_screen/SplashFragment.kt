@@ -65,7 +65,7 @@ class SplashFragment : Fragment() {
                             Snackbar.make(
                                 requireContext(),
                                 binding.root,
-                                "Failed to load drinks. Please check your connection",
+                                "Failed to load drinks. Please check your internet connection",
                                 Snackbar.LENGTH_LONG
                             ).show()
                         }

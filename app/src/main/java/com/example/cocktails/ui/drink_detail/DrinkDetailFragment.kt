@@ -1,6 +1,6 @@
-package com.example.cocktails.ui.drink_detail
+    package com.example.cocktails.ui.drink_detail
 
-import android.animation.PropertyValuesHolder
+import android.app.SharedElementCallback
 import android.content.res.Configuration
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
@@ -8,25 +8,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
-import com.example.cocktails.R
-import com.example.cocktails.animatePropertyValuesHolder
+import com.example.cocktails.DrinkTypes
+import com.example.cocktails.data.models.Drink
 import com.example.cocktails.databinding.FragmentDrinkDetailBinding
 import com.example.cocktails.getRepository
-import com.example.cocktails.loadUrl
+import com.example.cocktails.ui.home.HomeFragmentViewModel
+import com.example.cocktails.ui.home.HomeFragmentViewModelFactory
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class DrinkDetailFragment : Fragment() {
     private lateinit var binding: FragmentDrinkDetailBinding
     private lateinit var viewModel: DrinkDetailFragmentViewModel
+    private lateinit var homeViewModel: HomeFragmentViewModel
     private val args: DrinkDetailFragmentArgs by navArgs()
+    private lateinit var drinks: List<Drink>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requireActivity().window.decorView.systemUiVisibility =
@@ -35,19 +36,34 @@ class DrinkDetailFragment : Fragment() {
         requireActivity().window.statusBarColor = TRANSPARENT
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform().apply {
-            setPathMotion(MaterialArcMotion())
             scrimColor = TRANSPARENT
         }
-        sharedElementReturnTransition = MaterialContainerTransform().apply {
-            scrimColor = TRANSPARENT
-        }
+        setEnterSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>?,
+                sharedElements: MutableMap<String, View>?
+            ) {
+                super.onMapSharedElements(names, sharedElements)
+            }
+        })
         viewModel = ViewModelProvider(
             this, DrinkDetailFragmentViewModelFactory(
                 getRepository(requireContext()),
                 requireContext()
             )
         ).get(DrinkDetailFragmentViewModel::class.java)
-        viewModel.drink = args.drink
+        homeViewModel = ViewModelProvider(
+            this,
+            HomeFragmentViewModelFactory(getRepository(requireContext()), requireContext())
+        ).get(HomeFragmentViewModel::class.java)
+        runBlocking {
+            drinks = when (args.drinkMap.drinkType) {
+                DrinkTypes.HOME.toString() -> viewModel.homeDrinks()
+                DrinkTypes.COCKTAILS.toString() -> viewModel.cocktails()
+                DrinkTypes.ORDINARY.toString() -> viewModel.ordinaryDrinks()
+                else -> viewModel.drinks()
+            }
+        }
     }
 
     override fun onCreateView(
@@ -60,77 +76,9 @@ class DrinkDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            instructionsLabel.alpha = 0F
-            instructions.alpha = 0F
-            ingredientsLabel.alpha = 0F
-            drinkThumb.apply {
-                loadUrl(viewModel.drink?.drinkThumb, requireContext())
-                setOnClickListener {
-
-                }
-            }
-            drinkName.text = viewModel.drink?.drinkName
-            drinkGlass.text = viewModel.drink?.glass
-            ingredients.layoutManager = GridLayoutManager(requireContext(), 3)
-        }
-
-        lifecycleScope.launch {
-            delay(400L)
-            val fade = PropertyValuesHolder.ofFloat(View.ALPHA, 0F, 1F)
-            val moveUp = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 100F, 0F)
-            val animSet = animatePropertyValuesHolder(
-                listOf(
-                    binding.ingredients, binding.ingredientsLabel,
-                    binding.instructionsLabel, binding.instructions
-                ), fade, moveUp
-            )
-            animSet.start()
-
-            var firstFetch = true
-            val adapter = SmallIngredientAdapter(emptyList(), requireContext())
-            viewModel.fetchIngredients.observe(requireActivity()) {
-                if (firstFetch) {
-                    firstFetch = false
-                    when (it.size) {
-                        0 -> {
-                            binding.apply {
-                                ingredientsLabel.text = getString(R.string.ingredient_absent)
-                                instructionsLabel.text = getString(R.string.instructions)
-                                instructions.text = viewModel.drink?.instructions
-                            }
-                            animSet.start()
-                        }
-                        1 -> {
-                            binding.apply {
-                                ingredientsLabel.text = getString(R.string.ingredient)
-                                adapter.ingredients = it
-                                ingredients.adapter = adapter
-                                instructionsLabel.text = getString(R.string.instructions)
-                                instructions.text = viewModel.drink?.instructions
-                            }
-                            animSet.start()
-                        }
-                        else -> {
-                            binding.apply {
-                                ingredientsLabel.text = getString(R.string.ingredients)
-                                adapter.ingredients = it
-                                ingredients.adapter = adapter
-                                instructionsLabel.text = getString(R.string.instructions)
-                                instructions.text = viewModel.drink?.instructions
-                            }
-                            animSet.start()
-                        }
-                    }
-                } else {
-                    if (it.size > 1) {
-                        binding.ingredientsLabel.text = getString(R.string.ingredients)
-                        adapter.ingredients = it
-                        binding.ingredients.adapter!!.notifyDataSetChanged()
-                    }
-                }
-            }
-        }
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+        binding.drinkPage.adapter = DrinkDetailAdapter(drinks, viewModel, this)
     }
 
     override fun onDetach() {

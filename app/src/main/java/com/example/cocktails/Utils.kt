@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
@@ -35,6 +34,13 @@ fun ImageView.loadUrl(url: String?, context: Context) =
     Glide.with(context)
         .load(url)
         .placeholder(getProgressDrawable(context))
+        .error(R.drawable.ic_image_failed)
+        .transition(DrawableTransitionOptions.withCrossFade(200))
+        .into(this)
+
+fun ImageView.loadUrlWithoutPlaceholder(url: String?, context: Context) =
+    Glide.with(context)
+        .load(url)
         .error(R.drawable.ic_image_failed)
         .transition(DrawableTransitionOptions.withCrossFade(200))
         .into(this)
@@ -91,9 +97,11 @@ fun getProgressDrawable(context: Context): CircularProgressDrawable {
 
 // Check for internet connection
 fun checkConnection(context: Context): Boolean {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
@@ -126,4 +134,27 @@ enum class DrinkTypes {
 enum class Result {
     PASS,
     FAIL
+}
+
+
+private var homeDrinks: List<Drink>? = null
+suspend fun getHomeDrinks(context: Context): List<Drink> {
+    if (homeDrinks == null)
+        homeDrinks = getRepository(context).drinks().shuffled()
+    return homeDrinks!!
+}
+
+private var cocktails: List<Drink>? = null
+suspend fun getCocktails(context: Context): List<Drink> {
+    if (cocktails == null)
+        cocktails = getRepository(context).filterHomeDrinkByCategory("Cocktail").shuffled()
+    return cocktails!!
+}
+
+private var ordinaryDrinks: List<Drink>? = null
+suspend fun getOrdinaryDrinks(context: Context): List<Drink> {
+    if (ordinaryDrinks == null)
+        ordinaryDrinks =
+            getRepository(context).filterHomeDrinkByCategory("Ordinary Drink").shuffled()
+    return ordinaryDrinks!!
 }

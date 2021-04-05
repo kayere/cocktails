@@ -1,7 +1,6 @@
 package com.example.cocktails.ui.ingredient_detail
 
 import android.animation.PropertyValuesHolder
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.transition.TransitionInflater
 import com.example.cocktails.R
 import com.example.cocktails.animatePropertyValuesHolder
 import com.example.cocktails.databinding.FragmentIngredientDetailBinding
 import com.example.cocktails.getRepository
 import com.example.cocktails.loadUrl
-import com.google.android.material.transition.MaterialArcMotion
-import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,13 +27,9 @@ class IngredientDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            scrimColor = Color.TRANSPARENT
-            setPathMotion(MaterialArcMotion())
-        }
-        sharedElementReturnTransition = MaterialContainerTransform().apply {
-            scrimColor = Color.TRANSPARENT
-        }
+        val transition =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = transition
         viewModel = ViewModelProvider(
             requireActivity(),
             IngredientDetailFragmentViewModelFactory(getRepository(requireContext()))

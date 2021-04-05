@@ -6,32 +6,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.models.Drink
 import com.example.cocktails.data.models.Ingredient
+import com.example.cocktails.getCocktails
+import com.example.cocktails.getHomeDrinks
+import com.example.cocktails.getOrdinaryDrinks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class HomeFragmentViewModel(private val repository: Repository, private val context: Context) :
     ViewModel() {
 
-    private var homeDrinks: List<Drink>? = null
-    suspend fun getHomeDrinks(): List<Drink> {
-        if (homeDrinks == null)
-            homeDrinks = repository.drinks().shuffled()
-        return homeDrinks!!
-    }
-
-    private var cocktails: List<Drink>? = null
-    suspend fun getCocktails(): List<Drink> {
-        if (cocktails == null)
-            cocktails = repository.filterHomeDrinkByCategory("Cocktail").shuffled()
-        return cocktails!!
-    }
-
-    private var ordinaryDrinks: List<Drink>? = null
-    suspend fun getOrdinaryDrinks(): List<Drink> {
-        if (ordinaryDrinks == null)
-            ordinaryDrinks = repository.filterHomeDrinkByCategory("Ordinary Drink").shuffled()
-        return ordinaryDrinks!!
-    }
+    suspend fun getHomeDrinks() = getHomeDrinks(context)
+    suspend fun getCocktails() = getCocktails(context)
+    suspend fun getOrdinaryDrinks() = getOrdinaryDrinks(context)
 
     private var ingredients: List<Ingredient>? = null
     suspend fun getIngredients(): List<Ingredient> {

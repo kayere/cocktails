@@ -130,58 +130,27 @@
                 android:id="@+id/all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
+                android:alpha="0.7"
                 android:fontFamily="@font/gotham_book"
                 android:text="@string/all"
                 android:textColor="?attr/colorOnPrimary"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/collection"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/collection" />
 
-            <TextView
-                android:id="@+id/alcoholic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:alpha="0.5"
-                android:fontFamily="@font/gotham_book"
-                android:text="@string/alcoholic"
-                android:textColor="?attr/colorOnPrimary"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@+id/all"
-                app:layout_constraintStart_toEndOf="@+id/all"
-                app:layout_constraintTop_toTopOf="@+id/all" />
-
-            <TextView
-                android:id="@+id/non_alcoholic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:alpha="0.5"
-                android:fontFamily="@font/gotham_book"
-                android:text="@string/non_alcoholic"
-                android:textColor="?attr/colorOnPrimary"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="@+id/alcoholic"
-                app:layout_constraintStart_toEndOf="@+id/alcoholic"
-                app:layout_constraintTop_toTopOf="@+id/alcoholic" />
-
-            <ImageView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/more"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:layout_marginEnd="10dp"
-                android:alpha="0.9"
-                android:background="?android:selectableItemBackground"
-                android:clickable="true"
-                android:contentDescription="@string/next"
-                android:focusable="true"
-                android:src="@drawable/ic_next"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:alpha="0.8"
                 android:text="@string/more"
-                app:layout_constraintBottom_toBottomOf="@+id/non_alcoholic"
+                app:layout_constraintBottom_toBottomOf="@+id/all"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/non_alcoholic" />
+                app:layout_constraintTop_toTopOf="@+id/all" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/drinks"
@@ -189,10 +158,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:orientation="horizontal"
+                android:transitionGroup="true"
+                android:transitionName="@string/all"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/non_alcoholic"
+                app:layout_constraintTop_toBottomOf="@id/all"
+                tools:layout_editor_absoluteY="123dp"
                 tools:listitem="@layout/drink_item" />
 
             <TextView
@@ -208,16 +180,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/drinks" />
 
-            <ImageView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/more_cocktails"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="@string/more_cocktails"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:alpha="0.8"
+                android:text="@string/more"
                 app:layout_constraintBottom_toBottomOf="@+id/cocktails_label"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/cocktails_label"
-                app:srcCompat="@drawable/ic_next" />
+                app:layout_constraintTop_toTopOf="@+id/cocktails_label" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cocktails"
@@ -225,6 +198,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:orientation="horizontal"
+                android:transitionGroup="true"
+                android:transitionName="cocktails"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -245,23 +220,26 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cocktails" />
 
-            <ImageView
-                android:id="@+id/more_drinks"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
+            <androidx.constraintlayout.utils.widget.MotionButton
+                android:id="@+id/more_ordinary_drinks"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:contentDescription="@string/more_ordinary_drinks"
+                android:alpha="0.8"
+                android:text="@string/more"
                 app:layout_constraintBottom_toBottomOf="@+id/ordinary_label"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ordinary_label"
-                app:srcCompat="@drawable/ic_next" />
+                app:layout_constraintTop_toTopOf="@+id/ordinary_label" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ordinary_drinks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:orientation="horizontal"
+                android:transitionGroup="true"
+                android:transitionName="@string/ordinary_drinks"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -281,22 +259,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ordinary_drinks" />
 
-            <ImageView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/more_ingredients"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:contentDescription="@string/more_ordinary_drinks"
+                android:alpha="0.8"
+                android:text="@string/more"
                 app:layout_constraintBottom_toBottomOf="@+id/ingredients_label"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ingredients_label"
-                app:srcCompat="@drawable/ic_next" />
+                app:layout_constraintTop_toTopOf="@+id/ingredients_label" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ingredients"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"

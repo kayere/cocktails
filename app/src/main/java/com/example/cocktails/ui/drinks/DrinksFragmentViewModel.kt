@@ -1,8 +1,11 @@
-package com.example.cocktails.ui.drink_detail
+package com.example.cocktails.ui.drinks
 
 import android.content.Context
 import android.widget.Toast
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.models.Drink
 import com.example.cocktails.data.models.Ingredient
@@ -10,13 +13,12 @@ import com.example.cocktails.getCocktails
 import com.example.cocktails.getHomeDrinks
 import com.example.cocktails.getIngredientNames
 import com.example.cocktails.getOrdinaryDrinks
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
 
-class DrinkDetailFragmentViewModel(
-    private val repository: Repository,
-    private val context: Context
-) : ViewModel() {
+class DrinksFragmentViewModel(private val repository: Repository, private val context: Context) :
+    ViewModel() {
 
     suspend fun drinks() = repository.drinks()
 
@@ -64,16 +66,15 @@ class DrinkDetailFragmentViewModel(
 
 }
 
-class DrinkDetailFragmentViewModelFactory(
+class DrinksFragmentViewModelFactory(
     private val repository: Repository,
     private val context: Context
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DrinkDetailFragmentViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(DrinksFragmentViewModel::class.java))
             @Suppress("UNCHECKED_CAST")
-            return DrinkDetailFragmentViewModel(repository, context) as T
-        }
-        throw IllegalArgumentException("Unknown view model class")
+            return DrinksFragmentViewModel(repository, context) as T
+        else throw IllegalArgumentException("Unknown view model class")
     }
 
 }

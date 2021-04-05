@@ -15,13 +15,15 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cocktails.data.models.Drink
+import com.example.cocktails.data.models.DrinkMap
 import com.example.cocktails.databinding.DrinkItemBinding
 import com.example.cocktails.loadUrl
 
 class DrinksAdapter(
     var drinks: List<Drink>,
     private var navController: NavController,
-    private val context: Context
+    private val context: Context,
+    private val type: String
 ) :
     RecyclerView.Adapter<DrinksViewHolder>() {
 
@@ -39,8 +41,8 @@ class DrinksAdapter(
             root.setOnClickListener {
                 clickedPosition = position
                 val options =
-                    HomeFragmentDirections.actionHomeFragmentToDrinkDetailFragment(drinks[position])
-                val extras = FragmentNavigatorExtras(root to "detail page")
+                    HomeFragmentDirections.actionHomeFragmentToDrinkDetailFragment(DrinkMap(type, position))
+                val extras = FragmentNavigatorExtras(root to "detail page $position")
                 navController.navigate(options, extras)
             }
             drinkName.text = drinks[position].drinkName

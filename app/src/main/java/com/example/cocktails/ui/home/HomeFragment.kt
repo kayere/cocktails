@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import com.example.cocktails.DrinkTypes
 import com.example.cocktails.R
 import com.example.cocktails.databinding.FragmentHomeBinding
 import com.example.cocktails.getRepository
-import com.example.cocktails.ui.drink_detail.DrinkDetailFragmentViewModel
-import com.example.cocktails.ui.drink_detail.DrinkDetailFragmentViewModelFactory
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.runBlocking
@@ -29,6 +29,7 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         exitTransition = MaterialElevationScale(false)
+
         reenterTransition = MaterialElevationScale(true)
         viewModel =
             ViewModelProvider(
@@ -36,18 +37,29 @@ class HomeFragment : Fragment() {
                 HomeFragmentViewModelFactory(getRepository(requireContext()), requireContext())
             )
                 .get(HomeFragmentViewModel::class.java)
-        val drinkDetailViewModel = ViewModelProvider(
-            this, DrinkDetailFragmentViewModelFactory(
-                getRepository(requireContext()), requireContext()
-            )
-        ).get(DrinkDetailFragmentViewModel::class.java)
+
         runBlocking {
             drinksAdapter =
-                DrinksAdapter(viewModel.getHomeDrinks(), findNavController(), requireContext())
+                DrinksAdapter(
+                    viewModel.getHomeDrinks(),
+                    findNavController(),
+                    requireContext(),
+                    DrinkTypes.HOME.toString()
+                )
             cocktailAdapter =
-                DrinksAdapter(viewModel.getCocktails(), findNavController(), requireContext())
+                DrinksAdapter(
+                    viewModel.getCocktails(),
+                    findNavController(),
+                    requireContext(),
+                    DrinkTypes.COCKTAILS.toString()
+                )
             ordinaryDrinkAdapter =
-                DrinksAdapter(viewModel.getOrdinaryDrinks(), findNavController(), requireContext())
+                DrinksAdapter(
+                    viewModel.getOrdinaryDrinks(),
+                    findNavController(),
+                    requireContext(),
+                    DrinkTypes.ORDINARY.toString()
+                )
             ingredientAdapter = IngredientAdapter(viewModel.getIngredients(), findNavController())
         }
     }
@@ -79,6 +91,54 @@ class HomeFragment : Fragment() {
                     }
                     else -> false
                 }
+            }
+            all.setOnClickListener {
+                val extras = FragmentNavigatorExtras(binding.drinks to "drink list")
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
+                        DrinkTypes.ALL.toString()
+                    ), extras
+                )
+            }
+            more.setOnClickListener {
+                val extras = FragmentNavigatorExtras(binding.drinks to "drink list")
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
+                        DrinkTypes.ALL.toString()
+                    ), extras
+                )
+            }
+            cocktailsLabel.setOnClickListener {
+                val extras = FragmentNavigatorExtras(binding.cocktails to "drink list")
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
+                        DrinkTypes.COCKTAILS.toString()
+                    ), extras
+                )
+            }
+            moreCocktails.setOnClickListener {
+                val extras = FragmentNavigatorExtras(binding.cocktails to "drink list")
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
+                        DrinkTypes.COCKTAILS.toString()
+                    ), extras
+                )
+            }
+            ordinaryLabel.setOnClickListener {
+                val extras = FragmentNavigatorExtras(binding.ordinaryDrinks to "drink list")
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
+                        DrinkTypes.ORDINARY.toString()
+                    ), extras
+                )
+            }
+            moreOrdinaryDrinks.setOnClickListener {
+                val extras = FragmentNavigatorExtras(binding.ordinaryDrinks to "drink list")
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
+                        DrinkTypes.ORDINARY.toString()
+                    ), extras
+                )
             }
         }
     }

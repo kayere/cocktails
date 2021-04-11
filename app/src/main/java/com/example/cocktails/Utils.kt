@@ -5,10 +5,16 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
@@ -18,8 +24,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.data.models.Drink
+import kotlin.math.roundToInt
 
-// EXTENSION FUNCTIONS
 // Get ingredient names from the drink
 fun Drink.getIngredientNames(): Set<String> =
     this.toString().split(", ")
@@ -158,3 +164,39 @@ suspend fun getOrdinaryDrinks(context: Context): List<Drink> {
             getRepository(context).filterHomeDrinkByCategory("Ordinary Drink").shuffled()
     return ordinaryDrinks!!
 }
+
+// Function to capture screenshot of a view
+fun captureScreenShot(view: View): Bitmap {
+    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_4444)
+    val canvas = Canvas(bitmap)
+    val backgroundDrawable = view.background
+    if (backgroundDrawable != null) {
+        backgroundDrawable.draw(canvas)
+    } else {
+        canvas.drawColor(Color.parseColor("#80000000"))
+    }
+    view.draw(canvas)
+    return bitmap
+}
+
+// Function to blur an image bitmap
+fun blurBitmap(context: Context, image: Bitmap, blurRadius: Float): Bitmap {
+    val bitmapScale = 0.4f
+    val width = (image.width * bitmapScale).roundToInt()
+    val height = (image.height * bitmapScale).roundToInt()
+    val inputBitmap = Bitmap.createScaledBitmap(image, width, height, false)
+    val outputBitmap = Bitmap.createBitmap(inputBitmap)
+    val rs = RenderScript.create(context)
+    val theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
+    val tmpIn = Allocation.createFromBitmap(rs, inputBitmap)
+    val tmpOut = Allocation.createFromBitmap(rs, outputBitmap)
+    theIntrinsic.setRadius(blurRadius)
+    theIntrinsic.setInput(tmpIn)
+    theIntrinsic.forEach(tmpOut)
+    tmpOut.copyTo(outputBitmap)
+    return outputBitmap
+}
+
+// Extension function to blur a view
+fun View.blur(context: Context, blurRadius: Float = 7.5f): Bitmap =
+    blurBitmap(context, captureScreenShot(this), blurRadius)

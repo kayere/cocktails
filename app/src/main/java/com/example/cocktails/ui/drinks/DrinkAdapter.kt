@@ -18,7 +18,7 @@ class DrinksAdapter(
 ) :
     RecyclerView.Adapter<DrinksAdapter.DrinksViewHolder>() {
 
-    var finishedAnimation = false
+    private var finishedAnimation = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinksViewHolder =
         DrinksViewHolder(
             DrinkListItemBinding.inflate(
@@ -39,7 +39,7 @@ class DrinksAdapter(
             viewModel.fetchIngredients(drink).observe(fragment) {
                 ingredientScroll.adapter = IngredientImageAdapter(it, fragment.requireContext())
             }
-            if (position <= 4 && !finishedAnimation) {
+            if (position <= 3 && !finishedAnimation) {
                 root.alpha = 0F
                 val fade = PropertyValuesHolder.ofFloat(View.ALPHA, 1F)
                 val moveUp = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 500F, 0F)

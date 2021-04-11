@@ -7,14 +7,16 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.example.cocktails.DrinkTypes
-import com.example.cocktails.R
+import coil.load
+import com.example.cocktails.*
 import com.example.cocktails.databinding.FragmentHomeBinding
-import com.example.cocktails.getRepository
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class HomeFragment : Fragment() {
@@ -29,7 +31,6 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         exitTransition = MaterialElevationScale(false)
-
         reenterTransition = MaterialElevationScale(true)
         viewModel =
             ViewModelProvider(

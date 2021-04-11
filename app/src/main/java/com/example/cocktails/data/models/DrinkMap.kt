@@ -2,7 +2,6 @@ package com.example.cocktails.data.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.example.cocktails.DrinkTypes
 
 data class DrinkMap(val drinkType: String, val drinkPosition: Int) : Parcelable {
     constructor(parcel: Parcel) : this(

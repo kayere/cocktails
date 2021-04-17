@@ -17,7 +17,6 @@ class DrinksAdapter(
     private val viewModel: DrinksFragmentViewModel
 ) :
     RecyclerView.Adapter<DrinksAdapter.DrinksViewHolder>() {
-
     private var finishedAnimation = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinksViewHolder =
         DrinksViewHolder(

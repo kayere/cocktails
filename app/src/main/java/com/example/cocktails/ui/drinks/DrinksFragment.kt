@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -11,7 +12,6 @@ import com.example.cocktails.DrinkTypes
 import com.example.cocktails.data.models.Drink
 import com.example.cocktails.databinding.FragmentDrinksBinding
 import com.example.cocktails.getRepository
-import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.coroutines.runBlocking
 
@@ -36,6 +36,8 @@ class DrinksFragment : Fragment() {
                 DrinkTypes.HOME.toString() -> viewModel.homeDrinks()
                 DrinkTypes.COCKTAILS.toString() -> viewModel.cocktails()
                 DrinkTypes.ORDINARY.toString() -> viewModel.ordinaryDrinks()
+                @Suppress("UNCHECKED_CAST")
+                DrinkTypes.FAVOURITES.toString() -> viewModel.favouriteDrinks() as List<Drink>
                 else -> viewModel.drinks()
             }
         }
@@ -43,6 +45,7 @@ class DrinksFragment : Fragment() {
             DrinkTypes.HOME.toString() -> "Home"
             DrinkTypes.COCKTAILS.toString() -> "Cocktails"
             DrinkTypes.ORDINARY.toString() -> "Ordinary drinks"
+            DrinkTypes.FAVOURITES.toString() -> "Favourites"
             else -> "All drinks"
         }
     }

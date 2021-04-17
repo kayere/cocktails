@@ -25,6 +25,7 @@ class DrinksFragmentViewModel(private val repository: Repository, private val co
     suspend fun homeDrinks() = getHomeDrinks(context)
     suspend fun cocktails() = getCocktails(context)
     suspend fun ordinaryDrinks() = getOrdinaryDrinks(context)
+    suspend fun favouriteDrinks() = repository.getFavourites()
 
     fun fetchIngredients(drink: Drink) = flow {
         val ingredients = mutableSetOf<Ingredient>()

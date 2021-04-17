@@ -87,7 +87,7 @@ private var repository: Repository? = null
 fun getRepository(context: Context): Repository {
     if (repository == null) {
         val db = DrinksDb.getDatabase(context)
-        repository = Repository(db.drinkDao(), db.ingredientsDao())
+        repository = Repository(db.drinkDao(), db.ingredientsDao(), db.favouriteDao())
     }
     return repository!!
 }
@@ -134,7 +134,8 @@ enum class DrinkTypes {
     ALL,
     HOME,
     COCKTAILS,
-    ORDINARY
+    ORDINARY,
+    FAVOURITES
 }
 
 enum class Result {

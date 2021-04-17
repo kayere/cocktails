@@ -1,22 +1,22 @@
 package com.example.cocktails.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.SharedElementCallback
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import coil.load
-import com.example.cocktails.*
+import com.example.cocktails.DrinkTypes
+import com.example.cocktails.R
 import com.example.cocktails.databinding.FragmentHomeBinding
+import com.example.cocktails.getRepository
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class HomeFragment : Fragment() {
@@ -32,6 +32,15 @@ class HomeFragment : Fragment() {
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
+        setExitSharedElementCallback(object : SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>?,
+                sharedElements: MutableMap<String, View>?
+            ) {
+                super.onMapSharedElements(names, sharedElements)
+                Log.d("TAG", "onMapSharedElements: $sharedElements")
+            }
+        })
         viewModel =
             ViewModelProvider(
                 this,
@@ -84,6 +93,14 @@ class HomeFragment : Fragment() {
             ingredients.adapter = ingredientAdapter
             toolBar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
+                    R.id.favorites -> {
+                        findNavController().navigate(
+                            HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
+                                DrinkTypes.FAVOURITES.toString()
+                            )
+                        )
+                        true
+                    }
                     R.id.settings -> {
                         val options =
                             HomeFragmentDirections.actionHomeFragmentToSettingsFragment()

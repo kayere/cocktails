@@ -41,6 +41,7 @@ class DrinkDetailFragment : Fragment() {
                 sharedElements: MutableMap<String, View>?
             ) {
                 super.onMapSharedElements(names, sharedElements)
+                names?.add("detail page ${binding.drinkPage.currentItem}")
                 Log.d("TAG", "onMapSharedElements: $names and shared elements $sharedElements")
             }
         })
@@ -77,6 +78,7 @@ class DrinkDetailFragment : Fragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
         binding.drinkPage.adapter = DrinkDetailAdapter(drinks, viewModel, this)
+        binding.drinkPage.setCurrentItem(args.drinkMap.drinkPosition, false)
     }
 
     override fun onDetach() {

@@ -1,28 +1,27 @@
-package com.example.cocktails.ui.drinks
+package com.example.cocktails.ui.favourite
+
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cocktails.data.models.Drink
-import com.example.cocktails.data.models.DrinkMap
+import com.example.cocktails.data.models.FavouriteDrink
 import com.example.cocktails.databinding.DrinkListItemBinding
 import com.example.cocktails.loadUrl
+import com.example.cocktails.ui.drinks.DrinksFragment
+import com.example.cocktails.ui.drinks.IngredientImageAdapter
 
-class DrinksAdapter(
-    private val drinks: List<Drink>,
+class FavouriteDrinkAdapter(
+    private val drinks: List<FavouriteDrink>,
     private val fragment: DrinksFragment,
-    private val viewModel: DrinksFragmentViewModel,
-    private val drinkType: String
+    private val viewModel: FavouriteViewModel
 ) :
-    RecyclerView.Adapter<DrinksAdapter.DrinksViewHolder>() {
+    RecyclerView.Adapter<FavouriteDrinkAdapter.FavouriteDrinkViewHolder>() {
     private var finishedAnimation = false
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinksViewHolder =
-        DrinksViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouriteDrinkViewHolder =
+        FavouriteDrinkViewHolder(
             DrinkListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -30,23 +29,13 @@ class DrinksAdapter(
             )
         )
 
-    override fun onBindViewHolder(holder: DrinksViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavouriteDrinkViewHolder, position: Int) {
         val drink = drinks[position]
         holder.binding.apply {
-            drinkThumb.apply {
-                loadUrl(drink.drinkThumb, fragment.requireContext())
-                transitionName = "drink at $position"
-            }
+            drinkThumb.loadUrl(drink.drinkThumb, fragment.requireContext())
             drinkName.text = drink.drinkName
             drinkGlass.text = drink.glass
             instructions.text = drink.instructions
-            drinkCard.setOnClickListener {
-                val extras = FragmentNavigatorExtras(drinkThumb to "detail page $position")
-                val args = DrinkMap(drinkType, position)
-                fragment.findNavController().navigate(
-                    DrinksFragmentDirections.actionDrinksFragmentToDrinkDetailFragment(args), extras
-                )
-            }
 
             viewModel.fetchIngredients(drink).observe(fragment) {
                 ingredientScroll.adapter = IngredientImageAdapter(it, fragment.requireContext())
@@ -67,7 +56,7 @@ class DrinksAdapter(
 
     override fun getItemCount(): Int = drinks.size
 
-    inner class DrinksViewHolder(val binding: DrinkListItemBinding) :
+    inner class FavouriteDrinkViewHolder(val binding: DrinkListItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
 }

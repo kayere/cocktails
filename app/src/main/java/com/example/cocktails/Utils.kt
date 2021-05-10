@@ -24,6 +24,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.cocktails.data.Repository
 import com.example.cocktails.data.local.DrinksDb
 import com.example.cocktails.data.models.Drink
+import com.example.cocktails.data.models.FavouriteDrink
 import kotlin.math.roundToInt
 
 // Get ingredient names from the drink
@@ -35,6 +36,16 @@ fun Drink.getIngredientNames(): Set<String> =
             else ""
         }
         .toSet()
+
+fun FavouriteDrink.getIngredientNames(): Set<String> =
+    this.toString().split(", ")
+        .filter { it.contains("ingredient") && !it.contains("instructions") && !it.contains("null") }
+        .map {
+            if (it.split("=").size == 2) it.split("=")[1]
+            else ""
+        }
+        .toSet()
+
 
 fun ImageView.loadUrl(url: String?, context: Context) =
     Glide.with(context)
@@ -188,12 +199,13 @@ fun blurBitmap(context: Context, image: Bitmap, blurRadius: Float): Bitmap {
     val inputBitmap = Bitmap.createScaledBitmap(image, width, height, false)
     val outputBitmap = Bitmap.createBitmap(inputBitmap)
     val rs = RenderScript.create(context)
-    val theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs))
     val tmpIn = Allocation.createFromBitmap(rs, inputBitmap)
     val tmpOut = Allocation.createFromBitmap(rs, outputBitmap)
-    theIntrinsic.setRadius(blurRadius)
-    theIntrinsic.setInput(tmpIn)
-    theIntrinsic.forEach(tmpOut)
+    ScriptIntrinsicBlur.create(rs, Element.U8_4(rs)).apply {
+        setRadius(blurRadius)
+        setInput(tmpIn)
+        forEach(tmpOut)
+    }
     tmpOut.copyTo(outputBitmap)
     return outputBitmap
 }

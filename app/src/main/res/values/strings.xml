@@ -27,7 +27,6 @@
     <string name="instructions">Instructions</string>
     <string name="description">Description</string>
     <string name="close_button">close button</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -44,7 +43,8 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="general">General</string>
-    <string name="favorites">favorites</string>
+    <string name="favorites">Favorites</string>
     <string name="network_alert_message">Not connected to any network. Please connect to load drinks</string>
     <string name="ok">OK</string>
+    <string name="no_drinks_here">No drinks here</string>
 </resources>

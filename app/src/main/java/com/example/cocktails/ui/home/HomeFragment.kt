@@ -95,9 +95,7 @@ class HomeFragment : Fragment() {
                 when (menuItem.itemId) {
                     R.id.favorites -> {
                         findNavController().navigate(
-                            HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
-                                DrinkTypes.FAVOURITES.toString()
-                            )
+                            HomeFragmentDirections.actionHomeFragmentToFavouriteFragment()
                         )
                         true
                     }
@@ -160,15 +158,4 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-    }
-
 }

@@ -62,7 +62,7 @@ class Repository(
     fun getDrinksWithIngredient(ingredient: String): Flow<List<Drink>> =
         drinksDao.getDrinksWithIngredient(ingredient.toLowerCase(Locale.ROOT))
 
-    suspend fun getFavourites(): List<FavouriteDrink> = favouriteDrinkDao.getFavourites()
+    fun getFavourites(): Flow<List<FavouriteDrink>> = favouriteDrinkDao.getFavourites()
 
     suspend fun addFavourite(favouriteDrink: FavouriteDrink) = favouriteDrinkDao.addFavourite(favouriteDrink)
 }

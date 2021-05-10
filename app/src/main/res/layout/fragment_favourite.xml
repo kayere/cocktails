@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
     android:transitionGroup="true"
-    android:transitionName="drink list"
-    tools:context=".ui.drinks.DrinksFragment">
+    android:transitionName="favourite drink list"
+    tools:context=".ui.favourite.FavouriteFragment">
 
     <TextView
         android:id="@+id/title"
@@ -16,6 +16,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:fontFamily="@font/times_new_roman"
+        android:text="@string/favorites"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,23 +26,37 @@
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="20dp"
         android:contentDescription="@string/search_icon"
         android:src="@drawable/ic_search"
         app:layout_constraintBottom_toBottomOf="@id/title"
-        app:layout_constraintEnd_toStartOf="@id/favorites"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title" />
 
-    <ImageView
-        android:id="@+id/favorites"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/no_favourite" />
+
+    <TextView
+        android:id="@+id/notice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:contentDescription="@string/favorites"
-        android:src="@drawable/heart"
-        app:layout_constraintBottom_toBottomOf="@id/search_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/search_button" />
+        android:fontFamily="@font/gotham_book"
+        android:textSize="15sp"
+        android:alpha="0"
+        android:text="@string/no_drinks_here"
+        app:layout_constraintEnd_toEndOf="@id/lottie"
+        app:layout_constraintStart_toStartOf="@id/lottie"
+        app:layout_constraintTop_toBottomOf="@id/lottie" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/drink_list"

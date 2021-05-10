@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_homeFragment_to_drinksFragment"
             app:destination="@id/drinksFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_favouriteFragment"
+            app:destination="@id/favouriteFragment" />
     </fragment>
     <fragment
         android:id="@+id/drinkDetailFragment"
@@ -63,5 +66,16 @@
         <argument
             android:name="drinksType"
             app:argType="string" />
+        <action
+            android:id="@+id/action_drinksFragment_to_favouriteFragment"
+            app:destination="@id/favouriteFragment" />
+        <action
+            android:id="@+id/action_drinksFragment_to_drinkDetailFragment"
+            app:destination="@id/drinkDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="com.example.cocktails.ui.favourite.FavouriteFragment"
+        android:label="fragment_favourite"
+        tools:layout="@layout/fragment_favourite" />
 </navigation>

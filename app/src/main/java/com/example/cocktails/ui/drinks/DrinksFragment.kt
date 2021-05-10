@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -36,8 +35,6 @@ class DrinksFragment : Fragment() {
                 DrinkTypes.HOME.toString() -> viewModel.homeDrinks()
                 DrinkTypes.COCKTAILS.toString() -> viewModel.cocktails()
                 DrinkTypes.ORDINARY.toString() -> viewModel.ordinaryDrinks()
-                @Suppress("UNCHECKED_CAST")
-                DrinkTypes.FAVOURITES.toString() -> viewModel.favouriteDrinks() as List<Drink>
                 else -> viewModel.drinks()
             }
         }
@@ -61,7 +58,7 @@ class DrinksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.title.text = title
-        binding.drinkList.adapter = DrinksAdapter(drinks, this, viewModel)
+        binding.drinkList.adapter = DrinksAdapter(drinks, this, viewModel, args.drinksType)
     }
 
 }

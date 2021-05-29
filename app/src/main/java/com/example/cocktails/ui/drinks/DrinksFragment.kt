@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -20,6 +21,7 @@ class DrinksFragment : Fragment() {
     private lateinit var title: String
     private val args: DrinksFragmentArgs by navArgs()
     private lateinit var viewModel: DrinksFragmentViewModel
+    var doAnimation = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +59,8 @@ class DrinksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
         binding.title.text = title
         binding.drinkList.adapter = DrinksAdapter(drinks, this, viewModel, args.drinksType)
     }

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.cocktails.DrinkTypes
 import com.example.cocktails.data.models.Drink
@@ -17,7 +18,10 @@ import com.example.cocktails.databinding.FragmentDrinkDetailBinding
 import com.example.cocktails.getRepository
 import com.example.cocktails.ui.home.HomeFragmentViewModel
 import com.example.cocktails.ui.home.HomeFragmentViewModelFactory
+import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class DrinkDetailFragment : Fragment() {
@@ -27,13 +31,12 @@ class DrinkDetailFragment : Fragment() {
     private val args: DrinkDetailFragmentArgs by navArgs()
     private lateinit var drinks: List<Drink>
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        requireActivity().window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.STATUS_BAR_HIDDEN
-        requireActivity().window.statusBarColor = TRANSPARENT
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             scrimColor = TRANSPARENT
+            setPathMotion(MaterialArcMotion())
         }
         setEnterSharedElementCallback(object : androidx.core.app.SharedElementCallback() {
             override fun onMapSharedElements(
@@ -41,7 +44,14 @@ class DrinkDetailFragment : Fragment() {
                 sharedElements: MutableMap<String, View>?
             ) {
                 super.onMapSharedElements(names, sharedElements)
-                names?.add("detail page ${binding.drinkPage.currentItem}")
+                names?.get(0)?.let { name ->
+                    /*binding.drinkPage.getChildAt(binding.drinkPage.currentItem).let { itemView ->
+                        sharedElements?.put(
+                            name,
+                            itemView
+                        )
+                    }*/
+                }
                 Log.d("TAG", "onMapSharedElements: $names and shared elements $sharedElements")
             }
         })
@@ -76,7 +86,15 @@ class DrinkDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
+        view.doOnPreDraw {
+            startPostponedEnterTransition()
+            lifecycleScope.launch {
+                delay(200)
+                requireActivity().window.decorView.systemUiVisibility =
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.STATUS_BAR_HIDDEN
+                requireActivity().window.statusBarColor = TRANSPARENT
+            }
+        }
         binding.drinkPage.adapter = DrinkDetailAdapter(drinks, viewModel, this)
         binding.drinkPage.setCurrentItem(args.drinkMap.drinkPosition, false)
     }

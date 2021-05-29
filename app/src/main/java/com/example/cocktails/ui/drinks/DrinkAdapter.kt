@@ -51,7 +51,7 @@ class DrinksAdapter(
             viewModel.fetchIngredients(drink).observe(fragment) {
                 ingredientScroll.adapter = IngredientImageAdapter(it, fragment.requireContext())
             }
-            if (position <= 3 && !finishedAnimation) {
+            if (position <= 3 && !finishedAnimation && fragment.doAnimation) {
                 root.alpha = 0F
                 val fade = PropertyValuesHolder.ofFloat(View.ALPHA, 1F)
                 val moveUp = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 500F, 0F)
@@ -59,8 +59,9 @@ class DrinksAdapter(
                     duration = (200 * (position + 1)).toLong()
                 }.start()
             }
-            if (position == 6) {
+            if (position >= 6) {
                 finishedAnimation = true
+                fragment.doAnimation = false
             }
         }
     }

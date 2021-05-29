@@ -2,18 +2,14 @@ package com.example.cocktails.ui.home
 
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.OvershootInterpolator
-import androidx.core.animation.doOnEnd
-import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cocktails.blur
-import com.example.cocktails.captureScreenShot
+import com.example.cocktails.DrinkTypes
 import com.example.cocktails.data.models.Drink
 import com.example.cocktails.data.models.DrinkMap
 import com.example.cocktails.databinding.DrinkItemBinding
@@ -21,8 +17,7 @@ import com.example.cocktails.loadUrl
 
 class DrinksAdapter(
     var drinks: List<Drink>,
-    private var navController: NavController,
-    private val context: Context,
+    private val fragment: HomeFragment,
     private val type: String
 ) :
     RecyclerView.Adapter<DrinksViewHolder>() {
@@ -30,7 +25,6 @@ class DrinksAdapter(
     private val fade = PropertyValuesHolder.ofFloat(View.ALPHA, 0F, 1F)
     private val scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0.2F, 1F)
     private val scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.2F, 1F)
-    private var clickedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinksViewHolder =
         DrinksViewHolder(DrinkItemBinding.inflate(LayoutInflater.from(parent.context)))
@@ -39,26 +33,46 @@ class DrinksAdapter(
         holder.binding.apply {
             root.transitionName = "drink ${drinks[position].drinkId} on $position to detail"
             root.setOnClickListener {
-                clickedPosition = position
+                when (type) {
+                    DrinkTypes.HOME.toString() -> {
+                        fragment.homeDrinksPosition = position
+                        fragment.cocktailDrinksPosition = -1
+                        fragment.ordinaryDrinksPosition = -1
+                    }
+                    DrinkTypes.COCKTAILS.toString() -> {
+                        fragment.cocktailDrinksPosition = position
+                        fragment.ordinaryDrinksPosition = -1
+                        fragment.homeDrinksPosition = -1
+                    }
+                    else -> {
+                        fragment.ordinaryDrinksPosition = position
+                        fragment.homeDrinksPosition = -1
+                        fragment.cocktailDrinksPosition = -1
+                    }
+                }
                 val options =
-                    HomeFragmentDirections.actionHomeFragmentToDrinkDetailFragment(DrinkMap(type, position))
+                    HomeFragmentDirections.actionHomeFragmentToDrinkDetailFragment(
+                        DrinkMap(
+                            type,
+                            position
+                        )
+                    )
                 val extras = FragmentNavigatorExtras(root to "detail page $position")
-                navController.navigate(options, extras)
+                fragment.findNavController().navigate(options, extras)
             }
             drinkName.text = drinks[position].drinkName
             drinkGlass.text = drinks[position].glass
-            drinkThumb.loadUrl(drinks[position].drinkThumb, context)
+            drinkThumb.loadUrl(drinks[position].drinkThumb, fragment.requireContext())
             root.alpha = 1F
-            ObjectAnimator.ofPropertyValuesHolder(root, fade, scaleX, scaleY).apply {
-                duration = 300L
-                interpolator = OvershootInterpolator()
-                startDelay = 150L
-                doOnEnd { root.alpha = 1F }
+            val animationPosition = when (type) {
+                DrinkTypes.HOME.toString() -> fragment.homeDrinksPosition
+                DrinkTypes.COCKTAILS.toString() -> fragment.cocktailDrinksPosition
+                DrinkTypes.ORDINARY.toString() -> fragment.ordinaryDrinksPosition
+                else -> -1
             }
-            if (position == clickedPosition) {
+            if (position == animationPosition) {
                 root.translationY = -20F
                 ObjectAnimator.ofFloat(root, View.TRANSLATION_Y, 0F).apply {
-                    duration = 300L
                     startDelay = 300L
                     interpolator = DecelerateInterpolator()
                 }.start()

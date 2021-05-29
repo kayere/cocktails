@@ -1,7 +1,6 @@
 package com.example.cocktails.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +25,9 @@ class HomeFragment : Fragment() {
     private lateinit var cocktailAdapter: DrinksAdapter
     private lateinit var ordinaryDrinkAdapter: DrinksAdapter
     private lateinit var ingredientAdapter: IngredientAdapter
+    var homeDrinksPosition = -1
+    var cocktailDrinksPosition = -1
+    var ordinaryDrinksPosition = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,36 @@ class HomeFragment : Fragment() {
                 sharedElements: MutableMap<String, View>?
             ) {
                 super.onMapSharedElements(names, sharedElements)
-                Log.d("TAG", "onMapSharedElements: $sharedElements")
+                when {
+                    homeDrinksPosition >= 0 ->
+                        names?.get(0)?.let { name ->
+                            binding.drinks.findViewHolderForAdapterPosition(homeDrinksPosition)?.itemView?.let { itemView ->
+                                sharedElements?.put(
+                                    name,
+                                    itemView
+                                )
+                            }
+                        }
+                    cocktailDrinksPosition >= 0 ->
+                        names?.get(0)?.let { name ->
+                            binding.cocktails.findViewHolderForAdapterPosition(cocktailDrinksPosition)?.itemView?.let { itemView ->
+                                sharedElements?.put(
+                                    name,
+                                    itemView
+                                )
+                            }
+                        }
+                    else ->
+                        names?.get(0)?.let { name ->
+                            binding.ordinaryDrinks.findViewHolderForAdapterPosition(ordinaryDrinksPosition)?.itemView?.let { itemView ->
+                                sharedElements?.put(
+                                    name,
+                                    itemView
+                                )
+                            }
+                        }
+                }
+
             }
         })
         viewModel =
@@ -52,22 +83,19 @@ class HomeFragment : Fragment() {
             drinksAdapter =
                 DrinksAdapter(
                     viewModel.getHomeDrinks(),
-                    findNavController(),
-                    requireContext(),
+                    this@HomeFragment,
                     DrinkTypes.HOME.toString()
                 )
             cocktailAdapter =
                 DrinksAdapter(
                     viewModel.getCocktails(),
-                    findNavController(),
-                    requireContext(),
+                    this@HomeFragment,
                     DrinkTypes.COCKTAILS.toString()
                 )
             ordinaryDrinkAdapter =
                 DrinksAdapter(
                     viewModel.getOrdinaryDrinks(),
-                    findNavController(),
-                    requireContext(),
+                    this@HomeFragment,
                     DrinkTypes.ORDINARY.toString()
                 )
             ingredientAdapter = IngredientAdapter(viewModel.getIngredients(), findNavController())
@@ -109,6 +137,7 @@ class HomeFragment : Fragment() {
                 }
             }
             all.setOnClickListener {
+                refreshPositions()
                 val extras = FragmentNavigatorExtras(binding.drinks to "drink list")
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
@@ -117,6 +146,7 @@ class HomeFragment : Fragment() {
                 )
             }
             more.setOnClickListener {
+                refreshPositions()
                 val extras = FragmentNavigatorExtras(binding.drinks to "drink list")
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
@@ -125,6 +155,7 @@ class HomeFragment : Fragment() {
                 )
             }
             cocktailsLabel.setOnClickListener {
+                refreshPositions()
                 val extras = FragmentNavigatorExtras(binding.cocktails to "drink list")
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
@@ -133,6 +164,7 @@ class HomeFragment : Fragment() {
                 )
             }
             moreCocktails.setOnClickListener {
+                refreshPositions()
                 val extras = FragmentNavigatorExtras(binding.cocktails to "drink list")
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
@@ -141,6 +173,7 @@ class HomeFragment : Fragment() {
                 )
             }
             ordinaryLabel.setOnClickListener {
+                refreshPositions()
                 val extras = FragmentNavigatorExtras(binding.ordinaryDrinks to "drink list")
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
@@ -149,6 +182,7 @@ class HomeFragment : Fragment() {
                 )
             }
             moreOrdinaryDrinks.setOnClickListener {
+                refreshPositions()
                 val extras = FragmentNavigatorExtras(binding.ordinaryDrinks to "drink list")
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeFragmentToDrinksFragment(
@@ -157,5 +191,11 @@ class HomeFragment : Fragment() {
                 )
             }
         }
+    }
+
+    fun refreshPositions() {
+        homeDrinksPosition = -1
+        cocktailDrinksPosition = -1
+        ordinaryDrinksPosition = -1
     }
 }
